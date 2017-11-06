@@ -1,77 +1,90 @@
-NState Manager by Sebastian Netsch
-==================================
+# NState Manager by Sebastian Netsch
+---
 
-Content-Table:
---------------
-> NState Manager
-> > NState
-> > Constructors
-> > Destructors
-> > External Functions
-> > Internal Variables
-> > Internal Functions
-> > How to Use
+### Content-Table:
+- NState Manager
+  - NState
+  - Constructors
+  - Destructors
+  - External Functions
+  - Internal Variables
+  - Internal Functions
+  - How to Use
 
-NState Manager
---------------
+---
+
+#### NState Manager
 This class is used to manage a programs states.
 
-NState
-------
+----
+
+#### NState
 This class is used to build a new state your program can be in.
 
-## Constructors
+----
+
+#### Constructors
 This class uses a default constructor with an initialization list.
 
-## Destructors
+---
+
+#### Destructors
 This class uses a thread safe custom destructor.
 
-## External Functions
-# auto add(std::unique_ptr<nstate> state, bool replacing) -> void
+---
+
+#### External Functions
+##### auto add(std::unique_ptr<nstate> state, bool replacing) -> void
 This function is used to add a NState to the NState Manager.
 The new NState can be emplaced on top of the current NState or it can replace it.
 
-# auto remove() -> void
+##### auto remove() -> void
 This sets a variable to remove the current NState from the NState Manager.
 This remove happens at the next call of the process() function.
 
-# auto process() -> void
+##### auto process() -> void
 This is the central part of the NState Manager. It processes all changes that happened since the last call of this function.
 It processes all the removes and adds that happened in the last iteration.
 
-# auto get() -> std::unique_ptr<nstate>&
+##### auto get() -> std::unique_ptr<nstate>&
 This function is used to access the current NState.
 
-## Internal Variables
-# std::mutex _mutex (_ to counter md systax)
+---
+
+#### Internal Variables
+##### std::mutex _mutex
 This variable is used for thread safe access.
 
-# std::stack<std::unique_ptr<nstate>> _states (_ to counter md systax)
+##### std::stack<std::unique_ptr<nstate>> _states
 This is the stack of NStates. Each NState can be viewed as an encapsulated part of your program that needs to be able to run and manage itself on it's own.
 
-# std::unique_ptr<nstate> _state (_ to counter md systax)
+##### std::unique_ptr<nstate> _state
 This is a unique pointer to the current state on hold.
 What happens to it get's decided at the next call of the process() function.
 
-# bool _removing (_ to counter md systax)
+##### bool _removing
 This variable is an indicator if the current NState is going to be removed at the next call of the process() function.
 
-# bool _adding (_ to counter md systax)
+##### bool _adding
 This variable is an indicator if a new NState is going to be added at the next call of the process() function.
 
-# bool _replacing (_ to counter md systax)
+##### bool _replacing
 This variable is an indicator if the current NState is going to be replaced with a new one at the next call of the process() function.
 
-## Internal Functions
-# NONE
+---
 
-## How to Use
-# Including it in your project
+#### Internal Functions
+##### NONE
+
+---
+
+#### How to Use
+##### Including it in your project
 ```
 #include "nstate_manager.hpp"
 ```
 
-# Standard SFML Main Loop with the NState Manager
+##### Standard SFML Main Loop with the NState Manager
 ```
 [...]
 
@@ -87,7 +100,7 @@ while(window.isOpen())
 [...]
 ```
 
-# Standard derived class from NState
+##### Standard derived class from NState
 new_state.hpp:
 ```
 [...]
