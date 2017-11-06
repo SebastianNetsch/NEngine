@@ -1,0 +1,17 @@
+*.exe
+*.out
+*.swp
+*.swo
+*.swap
+*.gch
+*.xcf
+*.~
+*~
+*.stackdump
+nanimator/tmp/*
+ninput_manager/tmp/*
+nparticle_system/tmp/*
+nresource_manager/tmp/*
+nstate_manager/tmp/*
+sfml/*
+tmp/*
