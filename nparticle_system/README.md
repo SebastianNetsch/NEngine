@@ -1,30 +1,30 @@
+<a name="top" />
 # NParticle System by Sebastian Netsch
+
+### Content-Table:
+- [NParticle System](#nparticle_system)
+  - [NParticle](#nparticle)
+  - [Constructors](#constructors)
+  - [Destructors](#destructors)
+  - [External Functions](#external_functions)
+  - [Internal Variables](#internal_variables)
+  - [Internal Functions](#internal_functions)
+  - [How to Use](#howto)
+
 ---
 
-###Content-Table:
-- NParticle System
-  - NParticle
-  - Constructors
-  - Destructors
-  - External Functions
-  - Internal Variables
-  - Internal Functions
-  - How to Use
-
----
-
-#### NParticle System
+#### <a name="nparticle_system" /> NParticle System [ [Top] ](#top)
 This class is used to add particles to ones program.
 It operates on the class NParticle.
 
 ---
 
-#### NParticle
+#### <a name="nparticle" /> NParticle [ [Top] ](#top)
 This is the base class for a single particle.
 
 ---
 
-#### Constructors
+#### <a name="constructors" /> Constructors [ [Top] ](#top)
 This class has a standard constructor with initialization list that sets standard values and a non standard constructor as followed:
 
 ##### nparticle_system(float gravitation_x, float gravitation_y, unsigned int maximum)
@@ -32,12 +32,12 @@ This constructor assigns the gravity and the maximum NParticle count as wanted b
 
 ---
 
-#### Destructors
+#### <a name="destructors" /> Destructors [ [Top] ](#top)
 This class used a custom but thread safe destructor.
 
 ---
 
-#### External Functions
+#### <a name="external_functions" /> External Functions [ [Top] ](#top)
 ##### auto add(unsigned int n, float live_span, float decay_rate, sf::Color color, float pos_x, float pos_y, float speed_x, float speed_y) -> void
 This function is used to add n amount of NParticles to the NParticle System.
 
@@ -60,33 +60,33 @@ Only call this function if you are absolutely you don't need your NParticles any
 
 ---
 
-#### Internal Variables
-##### sf::Vector2f _gravity (_ to counter md systax)
+#### <a name="internal_variables" /> Internal Variables [ [Top] ](#top)
+##### sf::Vector2f _gravity
 This variable is the gravitational force applied on your NParticles.
 
-##### sf::Color _transparent (_ to counter md systax)
+##### sf::Color _transparent
 This is a SFML color set to transparent to reset a NParticles SFML color.
 It currently is DEPRECATED!
 
-##### unsigned int _max (_ to counter md systax)
+##### unsigned int _max
 This variable resembles the maximum amount of NParticles your NParticle System can contain.
 
-##### std::mutex _mutex (_ to counter md systax)
+##### std::mutex _mutex
 This variable is used for thread safe operations.
 
 ---
 
-#### Internal Functions
-##### auto _create(float live_span, float decay_rate, sf::Color color, float pos_x, float pos_y, float speed_x, float speed_y) -> void (_ to counter md systax)
+#### <a name="internal_functions" /> Internal Functions [ [Top] ](#top)
+##### auto _create(float live_span, float decay_rate, sf::Color color, float pos_x, float pos_y, float speed_x, float speed_y) -> void
 This function is used to create a new NParticle and add it to the NParticle System. It is called when you add a particle.
 
-##### inline auto _update_health_points(unsigned int pos) -> void (_ to counter md systax)
+##### inline auto _update_health_points(unsigned int pos) -> void
 This function updates a NParticles healthpoints/ live span.
 
-##### inline auto _update_pos(unsigned int pos, float delta_time) -> void (_ to counter md systax)
+##### inline auto _update_pos(unsigned int pos, float delta_time) -> void
 This function updates a NParticles position.
 
-##### auto _delete_dead() -> void (_ to counter md systax)
+##### auto _delete_dead() -> void
 This function iterates over all NParticles in the NParticle System and deletes every dead NParticle.
 
 ##### void draw(sf::RenderTarget &target, sf::RenderStates states) const {[...]}
@@ -94,7 +94,7 @@ This function is used to allow easy drawing of all NParticles by allowing you to
 
 ---
 
-#### How to Use
+#### <a name="howto" /> How to Use [ [Top] ](#top)
 ##### Including it in your project
 ```
 #include "nparticle_system.hpp"
@@ -119,3 +119,5 @@ particle_system.update(delta_time); // updates all NParticles in your NParticle 
 ```
 window.draw(particle_system); // draws all NParticles in your NParticle System with window being a SFML RenderWindow
 ```
+
+Go to [ [Top] ](#top)

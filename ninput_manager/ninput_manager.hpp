@@ -28,9 +28,15 @@
 /////////////////////////////////////////////////////////////////////////////////
 // ! SFML/Graphics.hpp for SFML structures
 // ! mutex for thread safety
+// ! unordered_map for custom key bindings
+// ! memory for shared pointer
 /////////////////////////////////////////////////////////////////////////////////
 #include <SFML/Graphics.hpp>
 #include <mutex>
+#include <unordered_map>
+#include <memory>
+
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////////
 // ! namespace for the nengine
@@ -47,6 +53,27 @@ namespace ninput_manager {
 /////////////////////////////////////////////////////////////////////////////////
 using namespace nengine;
 using namespace nengine::ninput_manager;
+
+/////////////////////////////////////////////////////////////////////////////////
+// ! the ninput_type
+/////////////////////////////////////////////////////////////////////////////////
+enum class ninput_type
+{
+	KEYBOARD,
+	MOUSE
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+// ! the nkey
+/////////////////////////////////////////////////////////////////////////////////
+struct nkey
+{
+	ninput_type _type;
+	sf::Keyboard::Key _key;
+	sf::Mouse::Button _button;
+	auto change_bind_keyboard(sf::Keyboard::Key const& input) -> void {_key = input;};
+	auto change_bind_mouse(sf::Mouse::Button const& input) -> void {_button = input;};
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 // ! the ninput_manager
@@ -104,11 +131,102 @@ class ninput_manager
 				return sf::Mouse::getPosition(window);
 			} // lock freed
 		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to add a key binding
+		/////////////////////////////////////////////////////////////////////////////////
+		auto add_bind(std::string const& key, sf::Keyboard::Key const& input) -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_key_bindings.find(key) == _key_bindings.end()) // not yet inserted
+				{
+					auto tmp = std::make_shared<nkey>();
+					tmp->_type = ninput_type::KEYBOARD;
+					tmp->_key = input;
+					_key_bindings.insert(std::make_pair(key, tmp));
+				}
+			} // lock freed
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to add a button binding
+		/////////////////////////////////////////////////////////////////////////////////
+		auto add_bind(std::string const& key, sf::Mouse::Button const& input) -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_key_bindings.find(key) == _key_bindings.end()) // not yet inserted
+				{
+					auto tmp = std::make_shared<nkey>();
+					tmp->_type = ninput_type::MOUSE;
+					tmp->_button = input;
+					_key_bindings.insert(std::make_pair(key, tmp));
+				}
+			} // lock freed
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to change a key binding
+		// ! does NOT add if not found
+		/////////////////////////////////////////////////////////////////////////////////
+		auto change_bind(std::string const& key, sf::Keyboard::Key const& input) -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_key_bindings.find(key) != _key_bindings.end()) // already inserted
+				{
+					if(_key_bindings.at(key)->_type == ninput_type::KEYBOARD)
+					{
+						_key_bindings.at(key)->change_bind_keyboard(input);
+					}
+				}
+			} // lock freed
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to change a button binding
+		// ! does NOT add if not found
+		/////////////////////////////////////////////////////////////////////////////////
+		auto change_bind(std::string const& key, sf::Mouse::Button const& input) -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_key_bindings.find(key) != _key_bindings.end()) // already inserted
+				{
+					if(_key_bindings.at(key)->_type == ninput_type::MOUSE)
+					{
+						_key_bindings.at(key)->change_bind_mouse(input);
+					}
+				}
+			} // lock freed
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to check a key or button binding
+		/////////////////////////////////////////////////////////////////////////////////
+		auto check_bind(std::string const& key) -> bool
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_key_bindings.find(key) != _key_bindings.end()) // already inserted
+				{
+					if((_key_bindings.at(key)->_type == ninput_type::KEYBOARD) && (sf::Keyboard::isKeyPressed(_key_bindings.at(key)->_key)))
+					{
+						return true;
+					}
+					if((_key_bindings.at(key)->_type == ninput_type::MOUSE) && (sf::Mouse::isButtonPressed(_key_bindings.at(key)->_button)))
+					{
+						return true;
+					}
+				}
+				return false;
+			} // lock freed
+		}
 	private:
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! for thread safety
 		/////////////////////////////////////////////////////////////////////////////////
 		std::mutex _mutex;
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! used to store custom key configuration
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, std::shared_ptr<nkey>> _key_bindings;
 }; // end of class ninput_manager
 
 } // end of namespace ninput_manager

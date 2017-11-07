@@ -1,45 +1,45 @@
+<a name="top" />
 # NLayer by Sebastian Netsch
----
 
 ### Content-Table:
-- NLayer
-  - NSprite
-  - NText
-  - Constructors
-  - Destructors
-  - External Functions
-  - Internal Variables
-  - Internal Functions
-  - How to Use
+- [NLayer](#nlayer)
+  - [NSprite](#nsprite)
+  - [NText](#ntext)
+  - [Constructors](#constructors)
+  - [Destructors](#destructors)
+  - [External Functions](#external_functions)
+  - [Internal Variables](#internal_variables)
+  - [Internal Functions](#internal_functions)
+  - [How to Use](#howto)
 
 ---
 
-#### NLayer
+#### <a name="nlayer" /> NLayer [ [Top] ](#top)
 This class is used to easily group SFML sprites and texts to a layer.
 
 ---
 
-#### NSprite
+#### <a name="nsprite" /> NSprite [ [Top] ](#top)
 This class is the wrapper for a SFML sprite.
 
 ---
 
-#### NText
+#### <a name="ntext" /> NText [ [Top] ](#top)
 This class is the wrapper for a SFML text.
 
 ---
 
-#### Constructors
+#### <a name="constructors" /> Constructors [ [Top] ](#top)
 This class uses standard constructor with initialization list.
 
 ---
 
-#### Destructors
+#### <a name="destructors" /> Destructors [ [Top] ](#top)
 This class uses standard destructor.
 
 ---
 
-#### External Functions
+#### <a name="external_functions" /> External Functions [ [Top] ](#top)
 ##### auto add_sprite(std::string const& key, float x, float y, std::shared_ptr<const sf::Texture> tex) -> void
 This function is used to add a SFML sprite to the layer.
 
@@ -57,11 +57,11 @@ This function is used to check if a layer is visible.
 
 ---
 
-#### Internal Variables
-##### std::mutex _mutex (_ to counter md systax)
+#### <a name="internal_variables" /> Internal Variables [ [Top] ](#top)
+##### std::mutex _mutex
 This variable is needed for thread safe access.
 
-##### bool _enabled (_ to counter md systax)
+##### bool _enabled
 This variable is used to mark the layer as enabled or not.
 
 ##### std::map<std::string, std::shared_ptr<nsprite>> _nsprites
@@ -72,13 +72,13 @@ This container is used to store shared pointers to NTexts.
 
 ---
 
-#### Internal Functions
+#### <a name="internal_functions" /> Internal Functions [ [Top] ](#top)
 ##### void draw(sf::RenderTarget &target, sf::RenderStates states) const {[...]}
 This function is used to draw all SFML sprites and texts in the layer
 
 ---
 
-#### How to Use
+#### <a name="howto" /> How to Use [ [Top] ](#top)
 ##### Including it in your project
 ```
 #include "nlayer.hpp"
@@ -99,3 +99,5 @@ gui_layer.add_sprite("GUI Background", 0.0, 0.0, gui_background_texture); // add
 ```
 window.draw(gui_layer); // first all sprites get drawn, then all texts, window being a sf::RenderWindow
 ```
+
+Go to [ [Top] ](#top)

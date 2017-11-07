@@ -1,39 +1,39 @@
+<a name="top" />
 # NState Manager by Sebastian Netsch
----
 
 ### Content-Table:
-- NState Manager
-  - NState
-  - Constructors
-  - Destructors
-  - External Functions
-  - Internal Variables
-  - Internal Functions
-  - How to Use
+- [NState Manager](#nstate_manager)
+  - [NState](#nstate)
+  - [Constructors](#constructors)
+  - [Destructors](#destructors)
+  - [External Functions](#external_functions)
+  - [Internal Variables](#internal_variables)
+  - [Internal Functions](#internal_functions)
+  - [How to Use](#howto)
 
 ---
 
-#### NState Manager
+#### <a name="nstate_manager" /> NState Manager [ [Top] ](#top)
 This class is used to manage a programs states.
 
 ----
 
-#### NState
+#### <a name="nstate" /> NState [ [Top] ](#top)
 This class is used to build a new state your program can be in.
 
 ----
 
-#### Constructors
+#### <a name="constructors" /> Constructors [ [Top] ](#top)
 This class uses a default constructor with an initialization list.
 
 ---
 
-#### Destructors
+#### <a name="destructors" /> Destructors [ [Top] ](#top)
 This class uses a thread safe custom destructor.
 
 ---
 
-#### External Functions
+#### <a name="external_functions" /> External Functions [ [Top] ](#top)
 ##### auto add(std::unique_ptr<nstate> state, bool replacing) -> void
 This function is used to add a NState to the NState Manager.
 The new NState can be emplaced on top of the current NState or it can replace it.
@@ -51,7 +51,7 @@ This function is used to access the current NState.
 
 ---
 
-#### Internal Variables
+#### <a name="internal_variables" /> Internal Variables [ [Top] ](#top)
 ##### std::mutex _mutex
 This variable is used for thread safe access.
 
@@ -73,12 +73,12 @@ This variable is an indicator if the current NState is going to be replaced with
 
 ---
 
-#### Internal Functions
+#### <a name="internal_functions" /> Internal Functions [ [Top] ](#top)
 ##### NONE
 
 ---
 
-#### How to Use
+#### <a name="howto" /> How to Use [ [Top] ](#top)
 ##### Including it in your project
 ```
 #include "nstate_manager.hpp"
@@ -130,39 +130,41 @@ new_state.cpp:
 
 #include "new_state.hpp"
 
-new_state(nengine::nstate_manager::nstate_manager& state_manager)
+new_state::new_state(nengine::nstate_manager::nstate_manager& state_manager)
 	: _state_manager(state_manager)
 {}
 
-void init()
+void new_state::init()
 {
 	 // assign values etc
 }
 
-void pause()
+void new_state::pause()
 {
 	// do something if the state is paused / used mostly for lost focus
 }
 
-void resume()
+void new_state::resume()
 {
 	// do something if the state is resumed / used mostly for gained focus
 }
 
-void handle()
+void new_state::handle()
 {
 	// handle all input
 }
 
-void update()
+void new_state::update()
 {
 	// update all members
 }
 
-void draw()
+void new_state::draw()
 {
 	// draw all members
 }
 
 [...]
 ```
+
+Go to [ [Top] ](#top)

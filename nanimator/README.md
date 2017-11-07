@@ -1,37 +1,37 @@
+<a name="top" />
 # NAnimator by Sebastian Netsch
----
 
 ### Content-Table:
-- NAnimator
-  - NPose
-  - Constructors
-  - Destructors
-  - External Functions
-  - Internal Variables
-  - Internal Functions
-  - How to Use
+- [NAnimator](#nanimator)
+  - [NPose](#npose)
+  - [Constructors](#constructors)
+  - [Destructors](#destructors)
+  - [External Functions](#external_functions)
+  - [Internal Variables](#internal_variables)
+  - [Internal Functions](#internal_functions)
+  - [How to Use](#howto)
 
-#### NAnimator
+#### <a name="nanimator" /> NAnimator [ [Top] ](#top)
 This class is used to easily gain access to animated SFML sprites.
 
 ---
 
-#### NPose
+#### <a name="npose" /> NPose [ [Top] ](#top)
 This enum class resembles the sprites pose.
 
 ---
 
-#### Constructors
+#### <a name="constructors" /> Constructors [ [Top] ](#top)
 This class uses a custom constructor with initialization list.
 
 ---
 
-#### Destructors
+#### <a name="destructors" /> Destructors [ [Top] ](#top)
 This class uses the standard destructor.
 
 ---
 
-#### External Functions
+#### <a name="external_functions" /> External Functions [ [Top] ](#top)
 ##### auto set_position(float x, float y) -> void
 This function is used to set the initial position.
 
@@ -82,7 +82,7 @@ This function is used to add a still animation on a combinded spritesheet where 
 
 ---
 
-#### Internal Variables
+#### <a name="internal_variables" /> Internal Variables [ [Top] ](#top)
 ##### std::mutex _mutex
 This variable is needed for thread safety.
 
@@ -157,13 +157,41 @@ This variable determines which pose the sprite is in.
 
 ---
 
-#### Internal Functions
+#### <a name="internal_functions" /> Internal Functions [ [Top] ](#top)
 ##### virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const {target.draw(_sprite, states);};
 This function is the SFML function for drawing an object.
 
 ---
 
-#### How to Use
+#### <a name="howto" /> How to Use [ [Top] ](#top)
 ##### Including it in your project
 ```
+#include "nanimator.hpp"
 ```
+
+##### Creating a animated sprite
+```
+
+```
+
+##### Adding a standing still animation from a single spritesheet
+```
+
+```
+
+##### Adding a moving left animation from a combined spritesheet
+```
+
+```
+
+##### Activating standing still animation
+```
+
+```
+
+##### Activating moving left animation
+```
+
+```
+
+Go to [ [Top] ](#top)

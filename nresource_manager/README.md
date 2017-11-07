@@ -1,22 +1,20 @@
+<a name="top" />
 # NResource Manager/ Wrapper by Sebastian Netsch
----
 
 ### Content-Table:
-- Resource Manager/ Wrapper
-  - Constructors
-  - Destructors
-  - External Functions
-  - Internal Variables
-  - Internal Functions
-  - How to Use
+- [Resource Manager/ Wrapper](#nresource_wrapper)
+  - [Constructors](#constructors)
+  - [Destructors](#destructors)
+  - [External Functions](#external_functions)
+  - [Internal Variables](#internal_variables)
+  - [Internal Functions](#internal_functions)
+  - [How to Use](#howto)
 
-#### NResource Manager/ Wrapper
+#### <a name="nresource_wrapper" /> NResource Manager/ Wrapper [ [Top] ](#top)
 The NResource Wrapper is a SFML Wrapper for the NResource Manager.
 It operates on a NResource Manager for SFML textures, fonts and soundbuffers and additionally a "wildcard" and therefore contains all base functionalities.
 
 It is possible to use both, but it is recommended using the NResource Wrapper when programming a SFML program.
-
----
 
 ## INFORMATION
 ##### In this README only the NResource Wrapper functionalities are explained.
@@ -24,17 +22,17 @@ It is possible to use both, but it is recommended using the NResource Wrapper wh
 
 ---
 
-#### Constructors
+#### <a name="constructors" /> Constructors [ [Top] ](#top)
 This class uses a standard constructor with an initialization list.
 
 ---
 
-#### Destructors
+#### <a name="destructors" /> Destructors [ [Top] ](#top)
 This class uses the thread safe custom destructor of the NResource Manager.
 
 ---
 
-#### External Functions
+#### <a name="external_functions" /> External Functions [ [Top] ](#top)
 ##### auto toggle_resource_storage() -> bool
 This fucntion is used to toggle the resource storage functionality.
 If activated it prevents resources from being deleted.
@@ -103,7 +101,7 @@ This function is used to access a SFML soundbuffer as a shared pointer.
 
 ---
 
-#### Internal Variables
+#### <a name="internal_variables" /> Internal Variables [ [Top] ](#top)
 ##### nresource_manager<std::string, VAL> _nresources
 This variable is the "wildcard" instance of a NResource Manager.
 
@@ -118,12 +116,12 @@ This variable is the SFML soundbuffer instance of a NResource Manager.
 
 ---
 
-#### Internal Functions
+#### <a name="internal_functions" /> Internal Functions [ [Top] ](#top)
 ##### NONE
 
 ---
 
-#### How to Use
+#### <a name="howto" /> How to Use [ [Top] ](#top)
 ##### Including it in your project
 ```
 #include "resource_wrapper.hpp"
@@ -170,3 +168,5 @@ unsigned int tmp = resource_management.get_size(); // fills tmp with the amount 
 ```
 resource_management.clr_unused(); // resets every pointer and erases every resource that is only pointed to by the resource manager, if _keep_resources was set to true nothing happens
 ```
+
+Go to [ [Top] ](#top)
