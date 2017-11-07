@@ -55,19 +55,6 @@ using namespace nengine;
 using namespace nengine::nanimator;
 
 /////////////////////////////////////////////////////////////////////////////////
-// ! the nanimated_sprites' pose
-/////////////////////////////////////////////////////////////////////////////////
-enum class pose
-{
-	NONE,
-	STILL,
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN
-};
-
-/////////////////////////////////////////////////////////////////////////////////
 // ! the nanimated_sprite
 /////////////////////////////////////////////////////////////////////////////////
 class nanimated_sprite : public sf::Drawable
@@ -97,7 +84,9 @@ class nanimated_sprite : public sf::Drawable
 			_sprite.setPosition(0, 0);
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// 
+		// ! set's the position of the sprite
+		// @param1: the x coordinate
+		// @param2: the y coordinate
 		/////////////////////////////////////////////////////////////////////////////////
 		auto set_position(float x, float y) -> void
 		{
@@ -108,6 +97,16 @@ class nanimated_sprite : public sf::Drawable
 		}
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! adds a animation to the sprite
+		// @param1: the key to identify the animation
+		// @param2: the amount of steps the animation has
+		// @param3: the shared pointer to the texture
+		// @param4: the amount of time a single frame is displayed
+		// @param5: the start x coordinate
+		// @param6: the start y coordinate
+		// @param7: the spritesheet row of the animation frames
+		// @param8: the height of each frame
+		// @param9: the width of each frame
+		// @return: to indicate if the adding succeeded
 		/////////////////////////////////////////////////////////////////////////////////
 		auto add(std::string const& key, unsigned int steps, std::shared_ptr<const sf::Texture> texture, float step_duration, int start_x, int start_y, unsigned int row, unsigned int height, unsigned int width) -> bool
 		{
@@ -198,7 +197,8 @@ class nanimated_sprite : public sf::Drawable
 			return true;
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// 
+		// ! to animate the sprite
+		// @param1: the key to identify the animation
 		/////////////////////////////////////////////////////////////////////////////////
 		auto animate(std::string const& key) -> void
 		{
@@ -264,7 +264,7 @@ class nanimated_sprite : public sf::Drawable
 			} // lock freed
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// 
+		// ! to stop an animation
 		/////////////////////////////////////////////////////////////////////////////////
 		auto stop() -> void
 		{

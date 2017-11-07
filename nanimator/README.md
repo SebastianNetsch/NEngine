@@ -1,9 +1,9 @@
 <a name="top" />
+
 # NAnimator by Sebastian Netsch
 
 ### Content-Table:
 - [NAnimator](#nanimator)
-  - [NPose](#npose)
   - [Constructors](#constructors)
   - [Destructors](#destructors)
   - [External Functions](#external_functions)
@@ -13,11 +13,6 @@
 
 #### <a name="nanimator" /> NAnimator [ [Top] ](#top)
 This class is used to easily gain access to animated SFML sprites.
-
----
-
-#### <a name="npose" /> NPose [ [Top] ](#top)
-This enum class resembles the sprites pose.
 
 ---
 
@@ -35,50 +30,14 @@ This class uses the standard destructor.
 ##### auto set_position(float x, float y) -> void
 This function is used to set the initial position.
 
-##### auto still() -> void
-This function is used to display the still animation.
+##### auto add(std::string const& key, unsigned int steps, std::shared_ptr<const sf::Texture> texture, float step_duration, int start_x, int start_y, unsigned int row, unsigned int height, unsigned int width) -> bool
+This function adds a animation to the nanimated_sprite.
 
-##### auto left() -> void
-This function is used to cycle through the left animation.
+##### auto animate(std::string const& key) -> void
+This function is used to play the animation identified by a key.
 
-##### auto right() -> void
-This function is used to cycle through the right animation.
-
-##### auto up() -> void
-This function is used to cycle through the up animation.
-
-##### auto down() -> void
-This function is used to cycle through the down animation.
-
-##### auto add_still(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a seperated spritesheet.
-
-##### auto add_still(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a combinded spritesheet where every animation is in a single row.
-
-##### auto add_left(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a seperated spritesheet.
-
-##### auto add_left(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a combinded spritesheet where every animation is in a single row.
-
-##### auto add_right(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a seperated spritesheet.
-
-##### auto add_right(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a combinded spritesheet where every animation is in a single row.
-
-##### auto add_up(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a seperated spritesheet.
-
-##### auto add_up(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a combinded spritesheet where every animation is in a single row.
-
-##### auto add_down(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a seperated spritesheet.
-
-##### auto add_down(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-This function is used to add a still animation on a combinded spritesheet where every animation is in a single row.
+##### auto stop() -> void
+This function is used to stop a animation.
 
 ---
 
@@ -86,74 +45,26 @@ This function is used to add a still animation on a combinded spritesheet where 
 ##### std::mutex _mutex
 This variable is needed for thread safety.
 
-##### std::vector<sf::IntRect> _still_animation
-A vector of sf::IntRect used to access and cycle through the animation spritesheet.
-
-##### std::vector<sf::IntRect> _left_animation
-A vector of sf::IntRect used to access and cycle through the animation spritesheet.
-
-##### std::vector<sf::IntRect> _right_animation
-A vector of sf::IntRect used to access and cycle through the animation spritesheet.
-
-##### std::vector<sf::IntRect> _up_animation
-A vector of sf::IntRect used to access and cycle through the animation spritesheet.
-
-##### std::vector<sf::IntRect> _down_animation
-A vector of sf::IntRect used to access and cycle through the animation spritesheet.
-
-##### std::shared_ptr<const sf::Texture> _still_texture
-This variable is the texture used for the still animation.
-
-##### std::shared_ptr<const sf::Texture> _left_texture
-This variable is the texture used for the left animation.
-
-##### std::shared_ptr<const sf::Texture> _right_texture
-This variable is the texture used for the right animation.
-
-##### std::shared_ptr<const sf::Texture> _up_texture
-This variable is the texture used for the up animation.
-
-##### std::shared_ptr<const sf::Texture> _down_texture
-This variable is the texture used for the down animation.
-
-##### unsigned int _still_iterator
-This variable resembles the iterator used to cycle through the animation.
-
-##### unsigned int _left_iterator
-This variable resembles the iterator used to cycle through the animation.
-
-##### unsigned int _right_iterator
-This variable resembles the iterator used to cycle through the animation.
-
-##### unsigned int _up_iterator
-This variable resembles the iterator used to cycle through the animation.
-
-##### unsigned int _down_iterator
-This variable resembles the iterator used to cycle through the animation.
-
-##### float _still_duration
-This is the amount of time, in seconds, used for one animation cycle.
-
-##### float _left_duration
-This is the amount of time, in seconds, used for one animation cycle.
-
-##### float _right_duration
-This is the amount of time, in seconds, used for one animation cycle.
-
-##### float _up_duration
-This is the amount of time, in seconds, used for one animation cycle.
-
-##### float _down_duration
-This is the amount of time, in seconds, used for one animation cycle.
-
-##### sf::Clock _animation_clock
-This is the animation clock.
-
 ##### sf::Sprite _sprite
 This is the SFML sprite that is used to draw the animations.
 
-##### pose _pose
-This variable determines which pose the sprite is in.
+##### std::unordered_map<std::string, unsigned int> _iterators
+This is a map of the nanimated_sprites animation iterators. It is used to determine the animations progress.
+
+##### std::unordered_map<std::string, std::shared_ptr<const sf::Texture>> _textures
+This is a map of the nanimated_sprites textures. It is used to determine the animations texture.
+
+##### std::unordered_map<std::string, float> _durations
+This is a map of the nanimated_sprites animation frame durations. It is used to determine when to switch to the next frame.
+
+##### std::unordered_map<std::string, std::vector<sf::IntRect>> _intrects
+This is a map of the nanimated_sprites animation integer rectangles. This is used to identify the rectangle that resembles one animation frame.
+
+##### std::unordered_map<std::string, sf::Clock> _clocks
+This is a map of the nanimated_sprites animation clocks. It is used to determine when to switch to the next frame.
+
+##### std::string _last_animation
+This stores the last called animation identified by a key.
 
 ---
 
@@ -171,26 +82,125 @@ This function is the SFML function for drawing an object.
 
 ##### Creating a animated sprite
 ```
-
+nengine::nanimator::nanimated_sprite animated_sprite;
 ```
 
-##### Adding a standing still animation from a single spritesheet
+##### Adding a basic animation from a combined spritesheet
+```
+// load the texture
+sf::Texture texture;
+texture.loadFromFile("res/spritesheet.png");
+
+// add the animations
+animated_sprite->add("up", 4, texture, 0.2f, 0, 0, 2, 64, 64);
+animated_sprite->add("left", 4, texture, 0.2f, 0, 0, 3, 64, 64);
+animated_sprite->add("down", 4, texture, 0.2f, 0, 0, 4, 64, 64);
+animated_sprite->add("right", 4, texture, 0.2f, 0, 0, 5, 64, 64);
 ```
 
+##### Activating an animation (here: "up")
+```
+if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+{
+	animated_sprite->animate("up");
+}
 ```
 
-##### Adding a moving left animation from a combined spritesheet
+##### Example SFML main to animate a sprite using the nanimated_sprite
 ```
+#include "../nanimator.hpp"
 
-```
+#include <memory>
 
-##### Activating standing still animation
-```
+int main()
+{
+	// the window
+	sf::RenderWindow window(sf::VideoMode(960, 540), "Animator Test");
 
-```
+	// the texture shared pointer
+	auto texture = std::make_shared<sf::Texture>();
+	texture->loadFromFile("res/spritesheet.png");
 
-##### Activating moving left animation
-```
+	// the animated sprite shared pointer
+	auto animated_sprite = std::make_shared<nengine::nanimator::nanimated_sprite>();
+
+	// adding animations
+	animated_sprite->add("still", 4, texture, 2.f, 0, 0, 1, 64, 64); // 64*64 animation frames
+	animated_sprite->add("up", 4, texture, 0.2f, 0, 0, 2, 64, 64);
+	animated_sprite->add("left", 4, texture, 0.2f, 0, 0, 3, 64, 64);
+	animated_sprite->add("down", 4, texture, 0.2f, 0, 0, 4, 64, 64);
+	animated_sprite->add("right", 4, texture, 0.2f, 0, 0, 5, 64, 64);
+
+	// for action/ reaction
+	bool up;
+	bool left;
+	bool down;
+	bool right;
+
+	// main loop
+	while (window.isOpen())
+	{
+		// events
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+
+		// action
+		up = false;
+		left = false;
+		down = false;
+		right = false;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			up = true;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			left = true;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			down = true;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			right = true;
+		}
+
+		// reaction
+		if(up)
+		{
+			animated_sprite->animate("up");
+		}
+		if(left)
+		{
+			animated_sprite->animate("left");
+		}
+		if(down)
+		{
+			animated_sprite->animate("down");
+		}
+		if(right)
+		{
+			animated_sprite->animate("right");
+		}
+		if(!up && !left && !down && !right)
+		{
+			animated_sprite->stop();
+		}
+
+		// drawing
+		window.clear(sf::Color::White);
+		window.draw(*animated_sprite);
+		window.display();
+	}
+
+	// end
+	return 0;
+}
 
 ```
 

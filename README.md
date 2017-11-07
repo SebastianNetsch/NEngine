@@ -1,4 +1,5 @@
 <a name="top" />
+
 # NEngine by Sebastian Netsch
 
 ### Content-Table:
@@ -88,7 +89,7 @@ Furthermore the NInput Manager supports custom key bindings.
 
 #### <a name="nanimator" /> 7) NAnimator [ [Top] ](#top)
 The NAnimator is a multitude of SFML sprite wrapper classes.
-All contained classes have one thing in common: They have some sort of animation going on (e.g. one still animation or one still animation and four basic directions).
+All contained classes have one thing in common: They have some sort of animation going on.
 
 ---
 
