@@ -29,10 +29,14 @@
 // ! SFML/Graphics.hpp for SFML structures
 // ! memory for shared pointers
 // ! mutex for thread safety
+// ! unordered_map for storage
 /////////////////////////////////////////////////////////////////////////////////
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <mutex>
+#include <unordered_map>
+
+#include <iostream>
 
 /////////////////////////////////////////////////////////////////////////////////
 // ! namespace for the nengine
@@ -64,48 +68,33 @@ enum class pose
 };
 
 /////////////////////////////////////////////////////////////////////////////////
-// ! the nanimated
+// ! the nanimated_sprite
 /////////////////////////////////////////////////////////////////////////////////
-class nanimated : public sf::Drawable
+class nanimated_sprite : public sf::Drawable
 {
 	public:
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! delete default constructor
 		/////////////////////////////////////////////////////////////////////////////////
-		nanimated(const nanimated&) = delete;
+		nanimated_sprite(const nanimated_sprite&) = delete;
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! delete copy constructor
 		/////////////////////////////////////////////////////////////////////////////////
-		nanimated& operator=(const nanimated&) = delete;
+		nanimated_sprite& operator=(const nanimated_sprite&) = delete;
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! custom constructor: with initialization list
 		/////////////////////////////////////////////////////////////////////////////////
-		nanimated()
+		nanimated_sprite()
 			: _mutex()
-			, _still_animation()
-			, _left_animation()
-			, _right_animation()
-			, _up_animation()
-			, _down_animation()
-			, _still_texture()
-			, _left_texture()
-			, _right_texture()
-			, _up_texture()
-			, _down_texture()
-			, _still_iterator()
-			, _left_iterator()
-			, _right_iterator()
-			, _up_iterator()
-			, _down_iterator()
-			, _still_duration()
-			, _left_duration()
-			, _right_duration()
-			, _up_duration()
-			, _down_duration()
-			, _animation_clock()
+			, _iterators()
+			, _textures()
+			, _durations()
+			, _intrects()
+			, _clocks()
 			, _sprite()
-			, _pose(pose::NONE)
+			, _last_animation("")
 		{
+			_sprite.setPosition(0, 0);
 		}
 		/////////////////////////////////////////////////////////////////////////////////
 		// 
@@ -118,308 +107,176 @@ class nanimated : public sf::Drawable
 			} // lock freed
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// 
+		// ! adds a animation to the sprite
 		/////////////////////////////////////////////////////////////////////////////////
-		auto still() -> void
+		auto add(std::string const& key, unsigned int steps, std::shared_ptr<const sf::Texture> texture, float step_duration, int start_x, int start_y, unsigned int row, unsigned int height, unsigned int width) -> bool
 		{
 			std::unique_lock<std::mutex> lock(_mutex);
 			{ // locked area
-				if(_still_animation.size() == 0)
+				// validate parameters
+				{
+					if(steps <= 0)
+					{
+						return false;
+					}
+					if(step_duration <= 0)
+					{
+						return false;
+					}
+					if(row <= 0)
+					{
+						return false;
+					}
+					if(key == "")
+					{
+						return false;
+					}
+					if(!texture) // check for nullptr
+					{
+						return false;
+					}
+				}
+
+				// check all maps for existing animations
+				{
+					bool exists = false;
+					if(_textures.find(key) != _textures.end())
+					{
+						exists = true;
+					}
+					if(_durations.find(key) != _durations.end())
+					{
+						exists = true;
+					}
+					if(_intrects.find(key) != _intrects.end())
+					{
+						exists = true;
+					}
+					if(_iterators.find(key) != _iterators.end())
+					{
+						exists = true;
+					}
+					if(_clocks.find(key) != _clocks.end())
+					{
+						exists = true;
+					}
+					if(exists)
+					{
+						return false;
+					}
+				}
+
+				// create and save all used data
+				{
+					// decrease row by one because you have to insert row >= 1 but the calculations are based on row - 1
+					row--;
+
+					// save default iterator
+					_iterators.insert(std::make_pair(key, 0));
+
+					// save texture
+					_textures.insert(std::make_pair(key, std::move(texture)));
+
+					// save step_duration
+					_durations.insert(std::make_pair(key, step_duration));
+
+					// save default clock
+					_clocks.insert(std::make_pair(key, std::move(sf::Clock())));
+					_clocks.at(key).restart();
+
+					// create and save int rectangles
+					{
+						std::vector<sf::IntRect> tmp;
+						for(unsigned int i = 0; i < steps; i++)
+						{
+							tmp.push_back(sf::IntRect(start_x + width * i, start_y + row * height, width, height));
+						}
+						_intrects.insert(std::make_pair(key, std::move(tmp)));
+					}
+				}
+			} // lock freed
+			return true;
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// 
+		/////////////////////////////////////////////////////////////////////////////////
+		auto animate(std::string const& key) -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				// validate parameters
+				{
+					if(key == "")
+					{
+						return;
+					}
+				}
+
+				// check all maps for existing animations
+				{
+					bool exists = false;
+					if(_textures.find(key) != _textures.end())
+					{
+						exists = true;
+					}
+					if(_durations.find(key) != _durations.end())
+					{
+						exists = true;
+					}
+					if(_intrects.find(key) != _intrects.end())
+					{
+						exists = true;
+					}
+					if(_iterators.find(key) != _iterators.end())
+					{
+						exists = true;
+					}
+					if(_clocks.find(key) != _clocks.end())
+					{
+						exists = true;
+					}
+					if(!exists)
+					{
+						return;
+					}
+				}
+
+				// animate the sprite
+				{
+					if(key != _last_animation)
+					{
+						_last_animation = key;
+						_sprite.setTexture(*_textures.at(key));
+						_sprite.setTextureRect(_intrects.at(key).at(0));
+					}
+
+					if(_clocks.at(key).getElapsedTime().asSeconds() >= _durations.at(key))
+					{
+						_sprite.setTextureRect(_intrects.at(key).at(_iterators.at(key)));
+						_iterators.at(key)++;
+						if(_iterators.at(key) >= _intrects.at(key).size())
+						{
+							_iterators.at(key) = 0;
+						}
+						_clocks.at(key).restart();
+					}
+				}
+			} // lock freed
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// 
+		/////////////////////////////////////////////////////////////////////////////////
+		auto stop() -> void
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if(_last_animation == "")
 				{
 					return;
 				}
-				if(_pose != pose::STILL)
-				{
-					_pose = pose::STILL;
-					_sprite.setTexture(*_still_texture);
-					_sprite.setTextureRect(_still_animation.at(0));
-				}
-				if(_animation_clock.getElapsedTime().asSeconds() >= _still_duration)
-				{
-					_sprite.setTextureRect(_still_animation.at(_still_iterator));
-					_still_iterator++;
-					if(_still_iterator >= _still_animation.size())
-					{
-						_still_iterator = 0;
-					}
-					_animation_clock.restart();
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto left() -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				if(_left_animation.size() == 0)
-				{
-					return;
-				}
-				if(_pose != pose::LEFT)
-				{
-					_pose = pose::LEFT;
-					_sprite.setTexture(*_left_texture);
-					_sprite.setTextureRect(_left_animation.at(0));
-				}
-				if(_animation_clock.getElapsedTime().asSeconds() >= _left_duration)
-				{
-					_sprite.setTextureRect(_left_animation.at(_left_iterator));
-					_left_iterator++;
-					if(_left_iterator >= _left_animation.size())
-					{
-						_left_iterator = 0;
-					}
-					_animation_clock.restart();
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto right() -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				if(_right_animation.size() == 0)
-				{
-					return;
-				}
-				if(_pose != pose::RIGHT)
-				{
-					_pose = pose::RIGHT;
-					_sprite.setTexture(*_right_texture);
-					_sprite.setTextureRect(_right_animation.at(0));
-				}
-				if(_animation_clock.getElapsedTime().asSeconds() >= _right_duration)
-				{
-					_sprite.setTextureRect(_right_animation.at(_right_iterator));
-					_right_iterator++;
-					if(_right_iterator >= _right_animation.size())
-					{
-						_right_iterator = 0;
-					}
-					_animation_clock.restart();
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto up() -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				if(_up_animation.size() == 0)
-				{
-					return;
-				}
-				if(_pose != pose::UP)
-				{
-					_pose = pose::UP;
-					_sprite.setTexture(*_up_texture);
-					_sprite.setTextureRect(_up_animation.at(0));
-				}
-				if(_animation_clock.getElapsedTime().asSeconds() >= _up_duration)
-				{
-					_sprite.setTextureRect(_up_animation.at(_up_iterator));
-					_up_iterator++;
-					if(_up_iterator >= _up_animation.size())
-					{
-						_up_iterator = 0;
-					}
-					_animation_clock.restart();
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto down() -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				if(_down_animation.size() == 0)
-				{
-					return;
-				}
-				if(_pose != pose::DOWN)
-				{
-					_pose = pose::DOWN;
-					_sprite.setTexture(*_down_texture);
-					_sprite.setTextureRect(_down_animation.at(0));
-				}
-				if(_animation_clock.getElapsedTime().asSeconds() >= _down_duration)
-				{
-					_sprite.setTextureRect(_down_animation.at(_down_iterator));
-					_down_iterator++;
-					if(_down_iterator >= _down_animation.size())
-					{
-						_down_iterator = 0;
-					}
-					_animation_clock.restart();
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_still(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_still_duration = step_duration;
-				_still_texture = std::move(texture);
-				_still_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_still_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_still(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_still_duration = step_duration;
-				_still_texture = std::move(texture);
-				_still_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_still_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate *+ sheet_row * height, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_left(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_left_duration = step_duration;
-				_left_texture = std::move(texture);
-				_left_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_left_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_left(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_left_duration = step_duration;
-				_left_texture = std::move(texture);
-				_left_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_left_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate + sheet_row * height, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_right(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_right_duration = step_duration;
-				_right_texture = std::move(texture);
-				_right_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_right_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_right(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_right_duration = step_duration;
-				_right_texture = std::move(texture);
-				_right_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_right_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate + sheet_row * height, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_up(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_up_duration = step_duration;
-				_up_texture = std::move(texture);
-				_up_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_up_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_up(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_up_duration = step_duration;
-				_up_texture = std::move(texture);
-				_up_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_up_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate + sheet_row * height, width, height));
-				}
-				} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_down (unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_down_duration = step_duration;
-				_down_texture = std::move(texture);
-				_down_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_down_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate, width, height));
-				}
-			} // lock freed
-		}
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		auto add_down(unsigned int steps, std::shared_ptr<const sf::Texture> texture, unsigned int step_size, unsigned int sheet_row, float step_duration, int x_coordinate, int y_coordinate, int width, int height) -> void
-		{
-			std::unique_lock<std::mutex> lock(_mutex);
-			{ // locked area
-				_down_duration = step_duration;
-				_down_texture = std::move(texture);
-				_down_iterator = 0;
-				for(unsigned int i = 0; i < steps; i++)
-				{
-					_down_animation.push_back(sf::IntRect(x_coordinate + width * i, y_coordinate + sheet_row * height, width, height));
-				}
+				_sprite.setTexture(*_textures.at(_last_animation));
+				_sprite.setTextureRect(_intrects.at(_last_animation).at(0));
+				_iterators.at(_last_animation) = 0;
 			} // lock freed
 		}
 	private:
@@ -428,97 +285,33 @@ class nanimated : public sf::Drawable
 		/////////////////////////////////////////////////////////////////////////////////
 		std::mutex _mutex;
 		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<sf::IntRect> _still_animation;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<sf::IntRect> _left_animation;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<sf::IntRect> _right_animation;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<sf::IntRect> _up_animation;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::vector<sf::IntRect> _down_animation;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::shared_ptr<const sf::Texture> _still_texture;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::shared_ptr<const sf::Texture> _left_texture;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::shared_ptr<const sf::Texture> _right_texture;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::shared_ptr<const sf::Texture> _up_texture;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		std::shared_ptr<const sf::Texture> _down_texture;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		unsigned int _still_iterator;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		unsigned int _left_iterator;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		unsigned int _right_iterator;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		unsigned int _up_iterator;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		unsigned int _down_iterator;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		float _still_duration;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		float _left_duration;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		float _right_duration;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		float _up_duration;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		float _down_duration;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
-		/////////////////////////////////////////////////////////////////////////////////
-		sf::Clock _animation_clock;
-		/////////////////////////////////////////////////////////////////////////////////
-		// 
+		// ! the SFML sprite used to draw the nanimated_sprite
 		/////////////////////////////////////////////////////////////////////////////////
 		sf::Sprite _sprite;
 		/////////////////////////////////////////////////////////////////////////////////
+		// ! for each animation
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, unsigned int> _iterators;
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! for each animation
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, std::shared_ptr<const sf::Texture>> _textures;
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! for each animation
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, float> _durations;
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! for each animation
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, std::vector<sf::IntRect>> _intrects;
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! to determine the amount of time passed for each animation
+		/////////////////////////////////////////////////////////////////////////////////
+		std::unordered_map<std::string, sf::Clock> _clocks;
+		/////////////////////////////////////////////////////////////////////////////////
 		// 
 		/////////////////////////////////////////////////////////////////////////////////
-		pose _pose;
+		std::string _last_animation;
 		/////////////////////////////////////////////////////////////////////////////////
 		// ! draw function
 		/////////////////////////////////////////////////////////////////////////////////
