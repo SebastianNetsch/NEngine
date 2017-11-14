@@ -10,7 +10,7 @@
 - [NParticle System](#nparticle_system)
 - [NInput Manager](#ninput_manager)
 - [NAnimator](#nanimator)
-- [NPhysics](#nphysics) (not yet implemented)
+- [NPhysics](#nphysics)
 
 ---
 
@@ -94,6 +94,6 @@ All contained classes have one thing in common: They have some sort of animation
 ---
 
 #### <a name="nphysics" /> 8) NPhysics [ [Top] ](#top)
-(not yet implemented)
+The NPhysics are a small amount of classes and functions for collision testing.
 
 Go to [ [Top] ](#top)

@@ -447,7 +447,7 @@ class ncollision_manager
 		{
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// ! checks if two SFML Sprites are colliding
+		// ! checks if two SFML Sprites are colliding with offset
 		// @param1: the first Sprite to be tested
 		// @param2: the second Sprite to be tested
 		// @param3: the offset with which the objects should be pushed away
@@ -456,12 +456,20 @@ class ncollision_manager
 		/////////////////////////////////////////////////////////////////////////////////
 		auto check(sf::Sprite const &sprite1, sf::Sprite const &sprite2, double offset) -> sf::Vector2f
 		{
-			sf::FloatRect rect1 = sprite1.getGlobalBounds();
-			sf::FloatRect rect2 = sprite2.getGlobalBounds();
-			return check(rect1, rect2, offset);
+			return check(sprite1.getGlobalBounds(), sprite2.getGlobalBounds(), offset);
 		}
 		/////////////////////////////////////////////////////////////////////////////////
-		// ! checks if two SFML FloatingRectangles are colliding
+		// ! checks if two SFML Sprites are colliding
+		// @param1: the first Sprite to be tested
+		// @param2: the second Sprite to be tested
+		// @return: the minimum translation vector for moving one of the Sprites away
+		/////////////////////////////////////////////////////////////////////////////////
+		auto check(sf::Sprite const &sprite1, sf::Sprite const &sprite2) -> sf::Vector2f
+		{
+			return check(sprite1.getGlobalBounds(), sprite2.getGlobalBounds(), 1.0);
+		}
+		/////////////////////////////////////////////////////////////////////////////////
+		// ! checks if two SFML FloatingRectangles are colliding with offset
 		// @param1: the first FloatingRectangle to be tested
 		// @param2: the second FloatingRectangle to be tested
 		// @param3: the offset with which the objects should be pushed away
@@ -524,6 +532,17 @@ class ncollision_manager
 			} // lock freed
 		}
 		/////////////////////////////////////////////////////////////////////////////////
+		// ! checks if two SFML FloatingRectangles are colliding
+		// @param1: the first FloatingRectangle to be tested
+		// @param2: the second FloatingRectangle to be tested
+		// @return: the minimum translation vector for moving the one of the
+		//          FloatRects away
+		/////////////////////////////////////////////////////////////////////////////////
+		auto check(sf::FloatRect const &rect1, sf::FloatRect const &rect2) -> sf::Vector2f
+		{
+			return check(rect1, rect2, 1.0);
+		}
+		/////////////////////////////////////////////////////////////////////////////////
 		// ! checks if two NPolygon shapes are colliding
 		// @param1: the first NPolygon to be tested
 		// @param2: the second NPolygon to be tested
@@ -532,7 +551,7 @@ class ncollision_manager
 		// @return: the minimum translation vector for moving the !second! NPolygon away
 		//          invert for moving the !first! away
 		/////////////////////////////////////////////////////////////////////////////////
-		auto check(npolygon const &poly1, npolygon const &poly2, double offset) -> sf::Vector2f
+		auto check(npolygon const &poly1, npolygon const &poly2) -> sf::Vector2f
 		{
 			std::unique_lock<std::mutex> lock(_mutex);
 			{ // locked area
