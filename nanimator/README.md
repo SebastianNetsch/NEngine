@@ -10,6 +10,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 #### <a name="nanimator" /> NAnimator [ [Top] ](#top)
 This class is used to easily gain access to animated SFML sprites.
@@ -203,5 +204,10 @@ int main()
 }
 
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+The original animated sprite came as a test by me and a friend of mine while testing walking animations.
 
 Go to [ [Top] ](#top)

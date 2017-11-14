@@ -10,6 +10,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 #### <a name="nresource_wrapper" /> NResource Manager/ Wrapper [ [Top] ](#top)
 The NResource Wrapper is a SFML Wrapper for the NResource Manager.
@@ -169,5 +170,10 @@ unsigned int tmp = resource_management.get_size(); // fills tmp with the amount 
 ```
 resource_management.clr_unused(); // resets every pointer and erases every resource that is only pointed to by the resource manager, if _keep_resources was set to true nothing happens
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+This resource manager is a heavely adjusted form for this engine from the asset manager by the youtube channel "Sonar Systems".
 
 Go to [ [Top] ](#top)

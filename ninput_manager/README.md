@@ -10,6 +10,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 ---
 
@@ -108,5 +109,11 @@ if(input_manager.check_bind("Forward")) // <-- this eliminates the need for chec
 	// move some stuff
 }
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+This input manager is a adjusted form for this engine from the input manager by the youtube channel "Sonar Systems".
+The capability of rebinding keys is based on the SFML github wiki article "Tutorial: Manager dynamic key binding".
 
 Go to [ [Top] ](#top)

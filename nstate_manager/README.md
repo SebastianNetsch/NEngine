@@ -11,6 +11,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 ---
 
@@ -167,5 +168,10 @@ void new_state::draw()
 
 [...]
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+This state manager is a adjusted form for this engine from the state machine by the youtube channel "Sonar Systems".
 
 Go to [ [Top] ](#top)

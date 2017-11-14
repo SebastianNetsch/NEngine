@@ -13,5 +13,6 @@ ninput_manager/tmp/*
 nparticle_system/tmp/*
 nresource_manager/tmp/*
 nstate_manager/tmp/*
+nphysics/tmp/*
 sfml/*
 tmp/*

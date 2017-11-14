@@ -12,6 +12,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 ---
 
@@ -100,5 +101,10 @@ gui_layer.add_sprite("GUI Background", 0.0, 0.0, gui_background_texture); // add
 ```
 window.draw(gui_layer); // first all sprites get drawn, then all texts, window being a sf::RenderWindow
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+The original idea for grouping together drawable objects came from a friend of mine who used this in a own Test-C#-RPG a while back.
 
 Go to [ [Top] ](#top)

@@ -11,6 +11,7 @@
   - [Internal Variables](#internal_variables)
   - [Internal Functions](#internal_functions)
   - [How to Use](#howto)
+  - [Inspirations](#mentions)
 
 ---
 
@@ -108,7 +109,7 @@ nengine::nparticle_system::nparticle_system particle_system; // construct a NPar
 
 ##### Adding NParticles
 ```
-particle_system.add(1, 100.0, 1.0, sf::Color::White, 0.0, 0.0, 0.1, 0.1); // adds 1 white NParticle to your NParticle System that will live for 100 ticks and travels at 0.1 pixels per tick in x and y direction
+particle_system.add(1, 100.0, 1.0, sf::Color::White, 0.0, 0.0, 0.1, 0.1); // adds 1 white NParticle to your NParticle System that will live for 100 ticks and travels at 0.1 pixels per tick in x and y direction at 0.0, 0.0
 ```
 
 ##### Updating your NParticle System
@@ -120,5 +121,10 @@ particle_system.update(delta_time); // updates all NParticles in your NParticle 
 ```
 window.draw(particle_system); // draws all NParticles in your NParticle System with window being a SFML RenderWindow
 ```
+
+---
+
+#### <a name="mentions" /> Inspirations [ [Top] ](#top)
+The original was written by the github user "Lillebror", updated for SFML 2.X by the github user "bloodythorn" and adjusted for usage in this engine.
 
 Go to [ [Top] ](#top)

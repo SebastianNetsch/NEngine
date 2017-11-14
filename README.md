@@ -3,7 +3,7 @@
 # NEngine by Sebastian Netsch
 
 ### Content-Table:
-- [What it is and isn't](#information)
+- [What it is and isn't](#introduction)
 - [NState Manager/ NState](#nstate_manager)
 - [NLayer](#nlayer)
 - [NResource Manager/ Wrapper](#nresource_manager)
@@ -14,7 +14,7 @@
 
 ---
 
-#### <a name="information" /> 1) What it is and isn't [ [Top] ](#top)
+#### <a name="introduction" /> 1) What it is and isn't [ [Top] ](#top)
 This is a simple SFML 2D game engine.
 It contains multiple parts to make your programming with SFML much easier.
 
