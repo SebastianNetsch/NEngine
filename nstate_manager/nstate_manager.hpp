@@ -150,6 +150,46 @@ class nstate_manager
 			} // lock freed
 		}
 		/////////////////////////////////////////////////////////////////////////////////
+		// ! processes all changes made to the nstate_manager with add() && remove()
+		// @return: true if a state was removed
+		/////////////////////////////////////////////////////////////////////////////////
+		auto if_process() -> bool
+		{
+			bool clr = false;
+			std::unique_lock<std::mutex> lock(_mutex);
+			{ // locked area
+				if((_removing) && (!_states.empty()))
+				{
+					clr = true;
+					_states.pop();
+					if(!_states.empty())
+					{
+						_states.top()->resume();
+					}
+					_removing = false;
+				}
+				if(_adding)
+				{
+					if(!_states.empty())
+					{
+						if(_replacing)
+						{
+							clr = true;
+							_states.pop();
+						}
+						else
+						{
+							_states.top()->pause();
+						}
+					}
+					_states.push(std::move(_state));
+					_states.top()->init();
+					_adding = false;
+				}
+			} // lock freed
+			return clr;
+		}
+		/////////////////////////////////////////////////////////////////////////////////
 		// ! returns the current state
 		// @return: a unique pointer to the current state
 		/////////////////////////////////////////////////////////////////////////////////
