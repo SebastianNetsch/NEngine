@@ -1,0 +1,43 @@
+# Project: nengine_test
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = ../pro/main.o ../pro/game.o ../pro/splash.o ../pro/main_menu.o ../pro/game_loop.o ../pro/pause_menu.o
+LINKOBJ  = ../pro/main.o ../pro/game.o ../pro/splash.o ../pro/main_menu.o ../pro/game_loop.o ../pro/pause_menu.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc  -static-libstdc++ -s -L"N:/_nengine/sfml/lib" ../../sfml/lib/libsfml-audio.a ../../sfml/lib/libsfml-graphics.a ../../sfml/lib/libsfml-network.a ../../sfml/lib/libsfml-system.a ../../sfml/lib/libsfml-window.a -m32 -s
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"N:/_nengine/sfml/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"N:/_nengine/sfml/include"
+BIN      = ../bin/nengine_test.exe
+CXXFLAGS = $(CXXINCS) -m32 -std=gnu++11 --static
+CFLAGS   = $(INCS) -m32 -std=gnu++11 --static
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+../pro/main.o: ../main.cpp
+	$(CPP) -c ../main.cpp -o ../pro/main.o $(CXXFLAGS)
+
+../pro/game.o: ../src/game.cpp
+	$(CPP) -c ../src/game.cpp -o ../pro/game.o $(CXXFLAGS)
+
+../pro/splash.o: ../src/states/splash/splash.cpp
+	$(CPP) -c ../src/states/splash/splash.cpp -o ../pro/splash.o $(CXXFLAGS)
+
+../pro/main_menu.o: ../src/states/main_menu/main_menu.cpp
+	$(CPP) -c ../src/states/main_menu/main_menu.cpp -o ../pro/main_menu.o $(CXXFLAGS)
+
+../pro/game_loop.o: ../src/states/game_loop/game_loop.cpp
+	$(CPP) -c ../src/states/game_loop/game_loop.cpp -o ../pro/game_loop.o $(CXXFLAGS)
+
+../pro/pause_menu.o: ../src/states/pause_menu/pause_menu.cpp
+	$(CPP) -c ../src/states/pause_menu/pause_menu.cpp -o ../pro/pause_menu.o $(CXXFLAGS)
